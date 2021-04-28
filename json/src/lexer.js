@@ -181,6 +181,9 @@ class Lexer {
         end,
       });
     }
+
+    // This should never happen because creating JSON should error on invalid input
+    throw new Error(`Invalid identifier at ${start}:${end}`);
   }
 
   readEscaped() {
