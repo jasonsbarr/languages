@@ -112,7 +112,6 @@ class Lexer {
     const start = this.col;
     this.next(); // skip opening quotation mark
     const value = this.readEscaped();
-    this.next(); // skip closing quotation mark
     return createToken({
       type: "String",
       value,
