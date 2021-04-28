@@ -21,3 +21,12 @@ function isBracket(char) {
 function isKeyword(word) {
   return /true|false|null/.test(word);
 }
+
+class Lexer {
+  constructor(input) {
+    this.input = input;
+    this.pos = 0;
+  }
+}
+
+module.exports = Lexer;
