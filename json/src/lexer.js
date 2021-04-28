@@ -18,10 +18,6 @@ function isPunc(char) {
   return /[\[\]\{\},:]/.test(char);
 }
 
-function isKeyword(word) {
-  return /true|false|null/.test(word);
-}
-
 function isHexadecimalChar(char) {
   return /[0-9a-fA-F]/.test(char);
 }
