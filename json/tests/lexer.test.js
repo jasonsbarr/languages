@@ -30,12 +30,11 @@ describe("Create a Lexer object", () => {
 });
 
 describe("Create a string token", () => {
-  it("Should create a string token when given a string in double quotes", () => {
+  it("Lexer#readString should return a String token", () => {
     const json = JSON.stringify("hello");
     const lexer = new Lexer(json);
     const match = {
-      type: "STRING",
-      value: "hello",
+      type: "String",
     };
 
     expect(lexer.readString()).toMatchObject(match);
