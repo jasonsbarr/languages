@@ -35,6 +35,19 @@ class Lexer {
   constructor(input) {
     this.input = input;
     this.pos = 0;
+    this.tokens = [];
+  }
+
+  next() {
+    return this.input[this.pos++];
+  }
+
+  peek() {
+    return this.input[this.pos];
+  }
+
+  eoi() {
+    return this.input[this.pos] === "";
   }
 }
 
