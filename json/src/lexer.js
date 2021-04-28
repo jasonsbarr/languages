@@ -22,6 +22,15 @@ function isKeyword(word) {
   return /true|false|null/.test(word);
 }
 
+function createToken({ type, value, start, end }) {
+  return {
+    type,
+    value,
+    start,
+    end,
+  };
+}
+
 class Lexer {
   constructor(input) {
     this.input = input;
