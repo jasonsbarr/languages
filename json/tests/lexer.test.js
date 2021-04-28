@@ -145,3 +145,12 @@ describe("Create a Boolean token", () => {
     });
   });
 });
+
+describe("Create a Null token", () => {
+  test("Lexer#readKeyword should return a Null token for null values", () => {
+    expect(Lexer.new(JSON.stringify(null)).readKeyword()).toMatchObject({
+      type: "Null",
+      value: null,
+    });
+  });
+});
