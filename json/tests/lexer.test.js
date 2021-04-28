@@ -89,12 +89,34 @@ describe("Create a Number token", () => {
     expect(lexer.readNumber()).toMatchObject(match);
   });
 
+  test("Lexer#readNumber should return a number token with the correct value when the number is negative", () => {
+    const json = JSON.stringify(-17);
+    const lexer = Lexer.new(json);
+    const match = {
+      type: "Number",
+      value: -17,
+    };
+
+    expect(lexer.readNumber()).toMatchObject(match);
+  });
+
   test("Lexer#readNumber should return a Number with the correct float value", () => {
     const json = JSON.stringify(3.1415);
     const lexer = Lexer.new(json);
     const match = {
       type: "Number",
       value: 3.1415,
+    };
+
+    expect(lexer.readNumber()).toMatchObject(match);
+  });
+
+  test("Lexer#readNumber should return a Number with the correct float value when the JSON string uses exponential notation", () => {
+    const json = JSON.stringify(3.1415e100);
+    const lexer = Lexer.new(json);
+    const match = {
+      type: "Number",
+      value: 3.1415e100,
     };
 
     expect(lexer.readNumber()).toMatchObject(match);
