@@ -166,4 +166,15 @@ describe("Correctly tokenize an empty object or array", () => {
 
     expect(lexer.read()).toMatchObject(match);
   });
+
+  test("Lexer#read should return the correct values for an empty array", () => {
+    const json = JSON.stringify([]);
+    const lexer = Lexer.new(json);
+    const match = [
+      { type: "Punc", value: "[" },
+      { type: "Punc", value: "]" },
+    ];
+
+    expect(lexer.read()).toMatchObject(match);
+  });
 });
