@@ -5,9 +5,9 @@ describe("Create a Lexer object", () => {
     const lexer = new Lexer("abc");
     const match = {
       input: "abc",
-      pos: 0
+      pos: 0,
     };
 
     expect(lexer).toMatchObject(match);
   });
-})
+});

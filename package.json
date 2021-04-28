@@ -12,7 +12,8 @@
   "scripts": {
     "test": "jest --onlyChanged",
     "test:watch": "jest --watch",
-    "test:all": "jest"
+    "test:all": "jest",
+    "format": "prettier --write . && eslint --fix"
   },
   "repository": {
     "type": "git",
