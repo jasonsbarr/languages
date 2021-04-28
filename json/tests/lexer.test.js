@@ -178,3 +178,78 @@ describe("Correctly tokenize an empty object or array", () => {
     expect(lexer.read()).toMatchObject(match);
   });
 });
+
+describe("Correctly tokenize JSON strings", () => {
+  test("Lexer#read should correctly tokenize an object with at least one property", () => {
+    const json = JSON.stringify({ test: "hello" });
+    const lexer = Lexer.new(json);
+    const match = [
+      { type: "Punc", value: "{" },
+      { type: "String", value: "test" },
+      { type: "Punc", value: ":" },
+      { type: "String", value: "hello" },
+      { type: "Punc", value: "}" },
+    ];
+
+    expect(lexer.read()).toMatchObject(match);
+  });
+
+  test("Lexer#read should correctly tokenize an array with multiple values", () => {
+    const json = JSON.stringify(["hi", true, 3.1415]);
+    const lexer = Lexer.new(json);
+    const match = [
+      { type: "Punc", value: "[" },
+      { type: "String", value: "hi" },
+      { type: "Punc", value: "," },
+      { type: "Boolean", value: true },
+      { type: "Punc", value: "," },
+      { type: "Number", value: 3.1415 },
+      { type: "Punc", value: "]" },
+    ];
+
+    expect(lexer.read()).toMatchObject(match);
+  });
+
+  test("Lexer#read should correctly tokenize an array with an object", () => {
+    const json = JSON.stringify([{ test: "hi" }, 47]);
+    const lexer = Lexer.new(json);
+    const match = [
+      { type: "Punc", value: "[" },
+      { type: "Punc", value: "{" },
+      { type: "String", value: "test" },
+      { type: "Punc", value: ":" },
+      { type: "String", value: "hi" },
+      { type: "Punc", value: "}" },
+      { type: "Punc", value: "," },
+      { type: "Number", value: 47 },
+      { type: "Punc", value: "]" },
+    ];
+
+    expect(lexer.read()).toMatchObject(match);
+  });
+
+  test("Lexer#read should correctly tokenize an object with an array and at least one other property", () => {
+    const json = JSON.stringify({
+      test: ["hi", 42],
+      str: "programming is fun",
+    });
+    const lexer = Lexer.new(json);
+    const match = [
+      { type: "Punc", value: "{" },
+      { type: "String", value: "test" },
+      { type: "Punc", value: ":" },
+      { type: "Punc", value: "[" },
+      { type: "String", value: "hi" },
+      { type: "Punc", value: "," },
+      { type: "Number", value: 42 },
+      { type: "Punc", value: "]" },
+      { type: "Punc", value: "," },
+      { type: "String", value: "str" },
+      { type: "Punc", value: ":" },
+      { type: "String", value: "programming is fun" },
+      { type: "Punc", value: "}" },
+    ];
+
+    expect(lexer.read()).toMatchObject(match);
+  });
+});
