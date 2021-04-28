@@ -65,7 +65,7 @@ class Lexer {
   }
 
   eoi() {
-    return this.input[this.pos] === "";
+    return this.input.charAt(this.pos) === "";
   }
 
   readWhile(predicate) {
@@ -124,7 +124,22 @@ class Lexer {
     });
   }
 
-  readKeyword() {}
+  readKeyword() {
+    const start = this.col;
+    let kwStr = "";
+    if (this.peek() == "-") {
+      kwStr += this.next(); // get current char and move pointer to next char
+    }
+    kwStr += this.readWhile((ch) => isChar(ch));
+    if (kwStr == "true" || kwStr == "false") {
+      return createToken({
+        type: "Boolean",
+        value: kwStr == "true" ? true : false,
+        start,
+        end: this.pos,
+      });
+    }
+  }
 
   readEscaped() {
     let escaped = false;
