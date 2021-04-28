@@ -35,10 +35,12 @@ class Lexer {
   constructor(input) {
     this.input = input;
     this.pos = 0;
+    this.col = 1;
     this.tokens = [];
   }
 
   next() {
+    this.col++;
     return this.input[this.pos++];
   }
 
@@ -48,6 +50,27 @@ class Lexer {
 
   eoi() {
     return this.input[this.pos] === "";
+  }
+
+  readWhile(predicate) {
+    let str = "";
+    while (!this.eoi() && predicate(this.peek())) {
+      console.log(this.peek());
+      str += this.next();
+    }
+    return str;
+  }
+
+  readString() {
+    const start = this.col;
+    this.next(); // skip opening quotation mark
+    const value = this.readWhile(() => !isDoubleQuote(this.peek()));
+    return createToken({
+      type: "String",
+      value,
+      start,
+      end: this.pos,
+    });
   }
 }
 
