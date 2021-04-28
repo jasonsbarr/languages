@@ -76,6 +76,8 @@ class Lexer {
     return str;
   }
 
+  read() {}
+
   readString() {
     const start = this.col;
     this.next(); // skip opening quotation mark
@@ -128,12 +130,21 @@ class Lexer {
     const start = this.col;
     let kwStr = "";
     kwStr += this.readWhile((ch) => isChar(ch));
+    const end = this.pos;
     if (kwStr == "true" || kwStr == "false") {
       return createToken({
         type: "Boolean",
         value: kwStr == "true" ? true : false,
         start,
-        end: this.pos,
+        end,
+      });
+    }
+    if (kwStr == "null") {
+      return createToken({
+        type: "Null",
+        value: null,
+        start,
+        end,
       });
     }
   }
