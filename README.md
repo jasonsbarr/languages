@@ -6,4 +6,4 @@ A repository of toy programming languages and other language-related tools I'm b
 
 ### JSON Parser
 
-A simple parser that transforms valid JSON strings into an abstract syntax tree.
+A simple parser that transforms valid JSON strings into JavaScript objects.
