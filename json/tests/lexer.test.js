@@ -39,4 +39,13 @@ describe("Create a string token", () => {
 
     expect(lexer.readString()).toMatchObject(match);
   });
+
+  it("Lexer#readString should return a string token with the correct value", () => {
+    const match = {
+      type: "String",
+      value: "hello",
+    };
+
+    expect(lexer.readString()).toMatchObject(match);
+  });
 });
