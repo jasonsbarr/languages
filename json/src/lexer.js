@@ -26,6 +26,10 @@ function isHexadecimalChar(char) {
   return /[0-9a-fA-F]/.test(char);
 }
 
+function isDot(char) {
+  return /\./.test(char);
+}
+
 function createToken({ type, value, start, end }) {
   return {
     type,
@@ -136,7 +140,40 @@ class Lexer {
     return str;
   }
 
-  readNumber() {}
+  readNumber() {
+    const start = this.col;
+    let ch = this.peek();
+    let numStr = "";
+    if (ch == "-") {
+      numStr += ch;
+      this.next(); // skip minus sign
+    }
+    numStr += this.readWhile((char) => isDigit(char));
+    ch = this.peek();
+    if (isDot(ch)) {
+      numStr += ch;
+      this.next(); // skip dot
+      numStr += this.readWhile((char) => isDigit(char));
+    }
+    ch = this.peek();
+    if (ch == "e") {
+      // is exponential notation
+      numStr += ch;
+      this.next(); // skip e
+      ch = this.peek();
+      if (ch == "+" || ch == "-") {
+        numStr += ch;
+        this.next(); // skip + or -
+      }
+      numStr += this.readWhile((char) => isDigit(char));
+    }
+    return createToken({
+      type: "Number",
+      value: Number(numStr),
+      start,
+      end: this.col,
+    });
+  }
 }
 
 module.exports = Lexer;
