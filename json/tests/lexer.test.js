@@ -10,4 +10,19 @@ describe("Create a Lexer object", () => {
 
     expect(lexer).toMatchObject(match);
   });
+
+  it("Should create a Lexer object with JSON input", () => {
+    const json = JSON.stringify({
+      prop1: "a string",
+      prop2: ["an", "array"],
+      bool: true,
+    });
+    const lexer = new Lexer(json);
+    const match = {
+      input: json,
+      pos: 0,
+    };
+
+    expect(lexer).toMatchObject(match);
+  });
 });
