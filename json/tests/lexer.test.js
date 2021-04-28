@@ -121,4 +121,27 @@ describe("Create a Number token", () => {
 
     expect(lexer.readNumber()).toMatchObject(match);
   });
+
+  describe("Return a Boolean token when value is true or false", () => {
+    test("Lexer#readKeyword should return a Boolean token when value is true or false", () => {
+      const json = JSON.stringify(true);
+      const lexer = Lexer.new(json);
+      const match = {
+        type: "Boolean",
+      };
+
+      expect(lexer.readKeyword()).toMatchObject(match);
+    });
+
+    test("Lexer#readKeyword should return a Boolean token with the correct value when true or false", () => {
+      expect(Lexer.new(JSON.stringify(true)).readKeyword()).toMatchObject({
+        type: "Boolean",
+        value: true,
+      });
+      expect(Lexer.new(JSON.stringify(false)).readKeyword()).toMatchObject({
+        type: "Boolean",
+        value: false,
+      });
+    });
+  });
 });
