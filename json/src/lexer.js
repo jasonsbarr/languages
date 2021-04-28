@@ -55,7 +55,6 @@ class Lexer {
   readWhile(predicate) {
     let str = "";
     while (!this.eoi() && predicate(this.peek())) {
-      console.log(this.peek());
       str += this.next();
     }
     return str;
