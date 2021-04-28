@@ -6,6 +6,7 @@ describe("Create a Lexer object", () => {
     const match = {
       input: "abc",
       pos: 0,
+      col: 1,
       tokens: [],
     };
 
@@ -22,6 +23,7 @@ describe("Create a Lexer object", () => {
     const match = {
       input: json,
       pos: 0,
+      col: 1,
       tokens: [],
     };
 
