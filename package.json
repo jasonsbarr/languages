@@ -1,5 +1,29 @@
 {
+  "name": "languages",
+  "description": "A repository of toy programming languages and other language-related tools I'm building as projects for my own learning and enrichment.",
+  "version": "1.0.0",
+  "main": "index.js",
   "devDependencies": {
     "jest": "^26.6.3"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonsbarr/languages.git"
+  },
+  "keywords": [
+    "languages",
+    "interpreter",
+    "parser",
+    "programming-languages",
+    "compiler"
+  ],
+  "author": "Jason Barr <jason@jasonsbarr.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonsbarr/languages/issues"
+  },
+  "homepage": "https://github.com/jasonsbarr/languages#readme"
 }
