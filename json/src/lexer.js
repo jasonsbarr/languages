@@ -60,6 +60,10 @@ class Lexer {
     return this.input[this.pos];
   }
 
+  lookahead() {
+    return this.input[this.pos + 1];
+  }
+
   eoi() {
     return this.input[this.pos] === "";
   }
@@ -119,6 +123,8 @@ class Lexer {
       end: this.col,
     });
   }
+
+  readKeyword() {}
 
   readEscaped() {
     let escaped = false;
