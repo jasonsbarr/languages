@@ -101,7 +101,7 @@ class Lexer {
       numStr += this.readWhile((char) => isDigit(char));
     }
     ch = this.peek();
-    if (ch == "e") {
+    if (ch == "e" || ch == "E") {
       // is exponential notation
       numStr += ch;
       this.next(); // skip e
