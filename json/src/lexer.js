@@ -39,6 +39,10 @@ class Lexer {
     this.tokens = [];
   }
 
+  static new(input) {
+    return new Lexer(input);
+  }
+
   next() {
     this.col++;
     return this.input[this.pos++];
@@ -71,6 +75,8 @@ class Lexer {
       end: this.pos,
     });
   }
+
+  readNumber() {}
 }
 
 module.exports = Lexer;

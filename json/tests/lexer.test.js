@@ -31,7 +31,7 @@ describe("Create a Lexer object", () => {
   });
 });
 
-describe("Create a string token", () => {
+describe("Create a String token", () => {
   test("Lexer#readString should return a String token", () => {
     const json = JSON.stringify("hello");
     const lexer = new Lexer(json);
@@ -42,7 +42,7 @@ describe("Create a string token", () => {
     expect(lexer.readString()).toMatchObject(match);
   });
 
-  test("Lexer#readString should return a string token with the correct value", () => {
+  test("Lexer#readString should return a String token with the correct value", () => {
     const json = JSON.stringify("hello");
     const lexer = new Lexer(json);
     const match = {
@@ -51,5 +51,17 @@ describe("Create a string token", () => {
     };
 
     expect(lexer.readString()).toMatchObject(match);
+  });
+});
+
+describe("Create a Number token", () => {
+  test("Lexer#readNumber should return a Number token", () => {
+    const json = JSON.stringify(3.1415);
+    const lexer = new Lexer(json);
+    const match = {
+      type: "Number",
+    };
+
+    expect(lexer.readNumber()).toMatchObject(match);
   });
 });
