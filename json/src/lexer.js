@@ -22,6 +22,10 @@ function isKeyword(word) {
   return /true|false|null/.test(word);
 }
 
+function isHexadecimalChar(char) {
+  return /[0-9a-fA-F]/.test(char);
+}
+
 function createToken({ type, value, start, end }) {
   return {
     type,
@@ -67,13 +71,69 @@ class Lexer {
   readString() {
     const start = this.col;
     this.next(); // skip opening quotation mark
-    const value = this.readWhile(() => !isDoubleQuote(this.peek()));
+    const value = this.readEscaped();
+    this.next(); // skip closing quotation mark
     return createToken({
       type: "String",
       value,
       start,
       end: this.pos,
     });
+  }
+
+  readEscaped() {
+    let escaped = false;
+    let str = "";
+    // this.next();
+    while (!this.eoi()) {
+      let ch = this.next();
+      if (escaped) {
+        str += this.readEscapeSequence(ch);
+        escaped = false;
+      } else if (ch == "\\") {
+        escaped = true;
+      } else if (ch == '"') {
+        break;
+      } else {
+        str += ch;
+      }
+    }
+    return str;
+  }
+
+  readEscapeSequence(ch) {
+    let str = "";
+    let seq = "";
+    if (ch == "n") {
+      str += "\n";
+    } else if (ch == "b") {
+      str += "\b";
+    } else if (ch == "f") {
+      str += "\f";
+    } else if (ch == "r") {
+      str += "\r";
+    } else if (ch == "t") {
+      str += "\t";
+    } else if (ch == "v") {
+      str += "\v";
+    } else if (ch == "0") {
+      str += "\0";
+    } else if (ch == "'") {
+      str += "'";
+    } else if (ch == '"') {
+      str += '"';
+    } else if (ch == "\\") {
+      str += "\\";
+    } else if (ch == "x") {
+      // is hexadecimal escape sequence
+      seq = this.readWhile((ch) => isHexadecimalChar(ch));
+      str += String.fromCharCode(parseInt(seq, 16));
+    } else if (ch == "u") {
+      // is Unicode escape sequence
+      seq = this.readWhile((ch) => isHexadecimalChar(ch));
+      str += String.fromCodePoint(parseInt(seq, 16));
+    }
+    return str;
   }
 
   readNumber() {}
