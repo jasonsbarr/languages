@@ -127,9 +127,6 @@ class Lexer {
   readKeyword() {
     const start = this.col;
     let kwStr = "";
-    if (this.peek() == "-") {
-      kwStr += this.next(); // get current char and move pointer to next char
-    }
     kwStr += this.readWhile((ch) => isChar(ch));
     if (kwStr == "true" || kwStr == "false") {
       return createToken({
