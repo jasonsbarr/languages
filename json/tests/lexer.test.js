@@ -154,3 +154,16 @@ describe("Create a Null token", () => {
     });
   });
 });
+
+describe("Correctly tokenize an empty object or array", () => {
+  test("Lexer#read should return the correct values for an empty object", () => {
+    const json = JSON.stringify({});
+    const lexer = Lexer.new(json);
+    const match = [
+      { type: "Punc", value: "{" },
+      { type: "Punc", value: "}" },
+    ];
+
+    expect(lexer.read()).toMatchObject(match);
+  });
+});
