@@ -6,6 +6,7 @@ describe("Create a Lexer object", () => {
     const match = {
       input: "abc",
       pos: 0,
+      tokens: [],
     };
 
     expect(lexer).toMatchObject(match);
@@ -21,8 +22,22 @@ describe("Create a Lexer object", () => {
     const match = {
       input: json,
       pos: 0,
+      tokens: [],
     };
 
     expect(lexer).toMatchObject(match);
+  });
+});
+
+describe("Create a string token", () => {
+  it("Should create a string token when given a string in double quotes", () => {
+    const json = JSON.stringify("hello");
+    const lexer = new Lexer(json);
+    const match = {
+      type: "STRING",
+      value: "hello",
+    };
+
+    expect(lexer.readString()).toMatchObject(match);
   });
 });
