@@ -19,7 +19,7 @@ function isBracket(char) {
 }
 
 function isKeyword(word) {
-  return /true|false|null/.test(word);
+  return /true|false|null|-?Infinity|NaN/.test(word);
 }
 
 function isHexadecimalChar(char) {
