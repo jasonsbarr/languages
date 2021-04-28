@@ -32,9 +32,9 @@ describe("Create a Lexer object", () => {
 });
 
 describe("Create a string token", () => {
-  const json = JSON.stringify("hello");
-  const lexer = new Lexer(json);
-  it("Lexer#readString should return a String token", () => {
+  test("Lexer#readString should return a String token", () => {
+    const json = JSON.stringify("hello");
+    const lexer = new Lexer(json);
     const match = {
       type: "String",
     };
@@ -42,7 +42,9 @@ describe("Create a string token", () => {
     expect(lexer.readString()).toMatchObject(match);
   });
 
-  it("Lexer#readString should return a String token with the correct value", () => {
+  test("Lexer#readString should return a string token with the correct value", () => {
+    const json = JSON.stringify("hello");
+    const lexer = new Lexer(json);
     const match = {
       type: "String",
       value: "hello",
