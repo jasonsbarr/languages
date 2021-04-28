@@ -4,6 +4,6 @@ A repository of toy programming languages and other language-related tools I'm b
 
 ## The Goods
 
-### JSON Parser
+### JSON
 
-A simple parser that transforms valid JSON strings into JavaScript objects.
+A simple interpreter that transforms valid JSON strings into JavaScript objects.
