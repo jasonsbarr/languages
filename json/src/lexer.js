@@ -14,12 +14,12 @@ function isDoubleQuote(char) {
   return /\"/.test(char);
 }
 
-function isBracket(char) {
-  return /[\[\]\{\}]/.test(char);
+function isPunc(char) {
+  return /[\[\]\{\},:]/.test(char);
 }
 
 function isKeyword(word) {
-  return /true|false|null|-?Infinity|NaN/.test(word);
+  return /true|false|null/.test(word);
 }
 
 function isHexadecimalChar(char) {
@@ -76,7 +76,41 @@ class Lexer {
     return str;
   }
 
-  read() {}
+  read() {
+    while (!this.eoi()) {
+      this.tokens.push(this.readNext());
+    }
+    return this.tokens;
+  }
+
+  readNext() {
+    const ch = this.peek();
+
+    if (isDoubleQuote(ch)) {
+      return this.readString();
+    }
+
+    if (isPositiveDigit(ch) || ch == "-") {
+      return this.readNumber();
+    }
+
+    if (isChar(ch)) {
+      return this.readKeyword();
+    }
+
+    if (isPunc(ch)) {
+      const start = this.col;
+
+      this.next(); // skip over punctuation char;
+
+      return createToken({
+        type: "Punc",
+        value: ch,
+        start,
+        end: this.pos,
+      });
+    }
+  }
 
   readString() {
     const start = this.col;
