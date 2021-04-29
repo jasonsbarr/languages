@@ -85,6 +85,10 @@ class Parser {
       return this.parseArray();
     }
 
+    if (isPunc(tok) && getPunc(tok) == "{") {
+      return this.parseObject();
+    }
+
     if (isString(tok) || isNumber(tok) || isBoolean(tok) || isNull(tok)) {
       this.next(); // advance token stream pointer
       return createNode({
@@ -110,6 +114,25 @@ class Parser {
     return createNode({
       type: "Array",
       value: elements,
+      start,
+      end: tok.end,
+    });
+  }
+
+  parseObject() {
+    const start = this.peek().start();
+
+    this.skipPunc("{");
+
+    const properties = this.parseObjectProperties();
+
+    const tok = this.peek();
+
+    this.skipPunc();
+
+    return createNode({
+      type: "Object",
+      value: properties,
       start,
       end: tok.end,
     });
