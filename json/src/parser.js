@@ -47,6 +47,15 @@ function match(expected, actual) {
   );
 }
 
+function matchValue(expected, actual) {
+  if (actual.value == expected) {
+    return true;
+  }
+  throw new Error(
+    `Expected ${expected}, got ${actual.value} at ${actual.start}`
+  );
+}
+
 class Parser {
   constructor(lexer) {
     this.lexer = lexer;
@@ -159,6 +168,31 @@ class Parser {
 
   parseObjectProperties() {
     let properties = [];
+    let tok = this.peek();
+
+    if (tok.value != "}") {
+      while (tok.value != "}") {
+        match("String", tok);
+
+        let property = {};
+
+        property.name = tok.value;
+        property.start = tok.start;
+        this.next(); // advance pointer to token after string
+        matchValue(":", this.peek());
+        this.skipPunc(":");
+        property.value = this.parseNext();
+        property.end = property.value.end;
+        properties.push(property);
+        tok = this.peek();
+
+        if (tok.value == ",") {
+          this.skipPunc(",");
+        }
+
+        tok = this.peek();
+      }
+    }
 
     return properties;
   }
