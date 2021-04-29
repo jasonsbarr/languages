@@ -89,4 +89,27 @@ describe("Parse an array", () => {
 
     expect(a).toMatchObject(match);
   });
+
+  test("It should correctly parse an array with nesting", () => {
+    const a = Parser.new(
+      Lexer.new(JSON.stringify([42, "test", [true, 3.1415], "last"]))
+    ).parseNext();
+    const match = {
+      type: "Array",
+      value: [
+        { type: "Number", value: 42 },
+        { type: "String", value: "test" },
+        {
+          type: "Array",
+          value: [
+            { type: "Boolean", value: true },
+            { type: "Number", value: 3.1415 },
+          ],
+        },
+        { type: "String", value: "last" },
+      ],
+    };
+
+    expect(a).toMatchObject(match);
+  });
 });
