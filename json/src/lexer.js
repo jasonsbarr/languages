@@ -178,7 +178,8 @@ class Lexer {
     }
 
     // This should never happen because creating JSON should error on invalid input
-    throw new Error(`Invalid identifier at ${start}:${end}`);
+    // Unless of course the JSON is being formatted by hand and mistakes are made
+    throw new Error(`Invalid identifier ${kwStr} at ${start}:${end}`);
   }
 
   readEscaped() {
