@@ -96,7 +96,21 @@ class Parser {
     }
   }
 
-  parseArray() {}
+  parseArray() {
+    const start = this.peek().start;
+
+    this.skipPunc("[");
+
+    const elements = this.parseArrayElements();
+
+    return createNode({
+      type: "Array",
+      value: elements,
+      start,
+    });
+  }
+
+  parseArrayElements() {}
 
   skipPunc(expected) {
     const tok = this.peek();
