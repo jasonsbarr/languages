@@ -49,7 +49,15 @@ class Evaluator {
     }
   }
 
-  evalObject(node) {}
+  evalObject(node) {
+    let obj = {};
+
+    node.value.forEach((value) => {
+      obj[value.name] = this.eval(value.value);
+    });
+
+    return obj;
+  }
 
   evalArray(node) {
     return node.value.map((value) => {
