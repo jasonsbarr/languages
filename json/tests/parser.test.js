@@ -151,7 +151,7 @@ describe("Parse an object", () => {
   test("It should correctly parse an object with an array for a property", () => {
     const o = Parser.new(
       Lexer.new(JSON.stringify({ arr: [1, 2, 3], hi: "there" }))
-    ).parseNext();
+    ).parseObject();
     const match = {
       type: "Object",
       value: [
@@ -166,7 +166,7 @@ describe("Parse an object", () => {
             ],
           },
         },
-        { name: "hi", value: "there" },
+        { name: "hi", value: { type: "String", value: "there" } },
       ],
     };
 
@@ -182,9 +182,14 @@ describe("Parse an object", () => {
       value: [
         {
           name: "obj",
-          value: { type: "Object", value: [{ name: "test", value: "hello" }] },
+          value: {
+            type: "Object",
+            value: [
+              { name: "test", value: { type: "String", value: "hello" } },
+            ],
+          },
         },
-        { name: "num", value: 47 },
+        { name: "num", value: { type: "Number", value: 47 } },
       ],
     };
 
