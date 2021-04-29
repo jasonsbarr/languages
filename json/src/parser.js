@@ -41,4 +41,8 @@ class Parser {
     this.input = tokens;
     this.pos = 0;
   }
+
+  static new(tokens) {
+    return new Parser(tokens);
+  }
 }
