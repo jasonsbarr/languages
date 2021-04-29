@@ -103,20 +103,40 @@ class Parser {
 
     const elements = this.parseArrayElements();
 
+    const tok = this.peek();
+
+    this.skipPunc("]");
+
     return createNode({
       type: "Array",
       value: elements,
       start,
+      end: tok.end,
     });
   }
 
-  parseArrayElements() {}
+  parseArrayElements() {
+    let tok = this.peek();
+    let elements = [];
+
+    elements.push(this.parseNext());
+    tok = this.peek();
+
+    while (isPunc(tok) && getPunc(tok) == ",") {
+      this.skipPunc(",");
+      elements.push(this.parseNext());
+      tok = this.peek();
+    }
+
+    return elements;
+  }
 
   skipPunc(expected) {
     const tok = this.peek();
 
     if (tok.value == expected) {
       this.next(); // skip over the token
+      return true;
     }
     throw new Error(`Expected ${expected}, got ${tok.value} at ${tok.start}`);
   }
