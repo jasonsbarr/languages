@@ -31,7 +31,7 @@ describe("Parse a number token", () => {
   });
 });
 
-describe("Parse a string token", () => {
+describe("Parse a String token", () => {
   test("It should correctly parse a String token", () => {
     const str = Parser.new(Lexer.new(JSON.stringify("hello"))).parseNext();
     const match = {
@@ -40,5 +40,23 @@ describe("Parse a string token", () => {
     };
 
     expect(str).toMatchObject(match);
+  });
+});
+
+describe("Parse a Boolean token", () => {
+  test("It should correctly parse Boolean tokens", () => {
+    const t = Parser.new(Lexer.new(JSON.stringify(true))).parseNext();
+    const f = Parser.new(Lexer.new(JSON.stringify(false))).parseNext();
+    const matchT = {
+      type: "Boolean",
+      value: true,
+    };
+    const matchF = {
+      type: "Boolean",
+      value: false,
+    };
+
+    expect(t).toMatchObject(matchT);
+    expect(f).toMatchObject(matchF);
   });
 });
