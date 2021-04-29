@@ -60,3 +60,15 @@ describe("Parse a Boolean token", () => {
     expect(f).toMatchObject(matchF);
   });
 });
+
+describe("Parse a Null token", () => {
+  test("It should correctly parse a Null token", () => {
+    const n = Parser.new(Lexer.new(JSON.stringify(null))).parseNext();
+    const match = {
+      type: "Null",
+      value: null,
+    };
+
+    expect(n).toMatchObject(match);
+  });
+});
