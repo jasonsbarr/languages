@@ -57,5 +57,7 @@ module.exports = {
   Parser,
   parse: function (input) {
     const lexer = Lexer.new(input);
+    const parser = Parser.new(lexer);
+    return parser.parse();
   },
 };
