@@ -72,3 +72,21 @@ describe("Parse a Null token", () => {
     expect(n).toMatchObject(match);
   });
 });
+
+describe("Parse an array", () => {
+  test("It should correctly parse a flat array", () => {
+    const a = Parser.new(
+      Lexer.new(JSON.stringify([42, "test", true]))
+    ).parseNext();
+    const match = {
+      type: "Array",
+      value: [
+        { type: "Number", value: 42 },
+        { type: "String", value: "test" },
+        { type: "Boolean", value: true },
+      ],
+    };
+
+    expect(a).toMatchObject(match);
+  });
+});
