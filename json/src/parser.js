@@ -72,8 +72,19 @@ class Parser {
   parseNext() {
     const tok = this.peek();
 
+    if (isString(tok)) {
+      this.next(); // advance token stream pointer
+
+      return createNode({
+        type: "String",
+        value: tok.value,
+        start: tok.start,
+        end: tok.end,
+      });
+    }
+
     if (isNumber(tok)) {
-      this.next();
+      this.next(); // advance token stream pointer
 
       return createNode({
         type: "Number",
