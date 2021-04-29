@@ -81,6 +81,10 @@ class Parser {
   parseNext() {
     const tok = this.peek();
 
+    if (isPunc(tok) && getPunc(tok) == "[") {
+      return this.parseArray();
+    }
+
     if (isString(tok) || isNumber(tok) || isBoolean(tok) || isNull(tok)) {
       this.next(); // advance token stream pointer
       return createNode({
@@ -91,6 +95,8 @@ class Parser {
       });
     }
   }
+
+  parseArray() {}
 }
 
 module.exports = {
