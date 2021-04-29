@@ -39,11 +39,23 @@ class Evaluator {
     if (isString(node) || isNumber(node) || isBoolean(node) || isNull(node)) {
       return node.value;
     }
+
+    if (isArray(node)) {
+      return this.evalArray(node);
+    }
+
+    if (isObject(node)) {
+      return this.evalObject(node);
+    }
   }
 
   evalObject(node) {}
 
-  evalArray(node) {}
+  evalArray(node) {
+    return node.value.map((value) => {
+      return this.eval(value);
+    });
+  }
 }
 
 module.exports = function evaluate(input) {
