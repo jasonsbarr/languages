@@ -30,3 +30,15 @@ describe("Parse a number token", () => {
     expect(num).toMatchObject(match);
   });
 });
+
+describe("Parse a string token", () => {
+  test("It should correctly parse a String token", () => {
+    const str = Parser.new(Lexer.new(JSON.stringify("hello"))).parseNext();
+    const match = {
+      type: "String",
+      value: "hello",
+    };
+
+    expect(str).toMatchObject(match);
+  });
+});
