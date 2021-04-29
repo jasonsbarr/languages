@@ -43,7 +43,7 @@ class Parser {
     this.pos = 0;
   }
 
-  static new(tokens) {
+  static new(lexer) {
     return new Parser(lexer);
   }
 }
