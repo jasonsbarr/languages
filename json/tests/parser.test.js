@@ -134,4 +134,60 @@ describe("Parse an object", () => {
 
     expect(o).toMatchObject(match);
   });
+
+  test("It should correctly parse an object with properties", () => {
+    const o = Parser.new(
+      Lexer.new(JSON.stringify({ test: "hello", meaning: 42 }))
+    ).parseNext();
+    const match = {
+      type: "Object",
+      value: [
+        { name: "test", value: "hello" },
+        { name: "meaning", value: 42 },
+      ],
+    };
+  });
+
+  test("It should correctly parse an object with an array for a property", () => {
+    const o = Parser.new(
+      Lexer.new(JSON.stringify({ arr: [1, 2, 3], hi: "there" }))
+    ).parseNext();
+    const match = {
+      type: "Object",
+      value: [
+        {
+          name: "arr",
+          value: {
+            type: "Array",
+            value: [
+              { type: "Number", value: 1 },
+              { type: "Number", value: 2 },
+              { type: "Number", value: 3 },
+            ],
+          },
+        },
+        { name: "hi", value: "there" },
+      ],
+    };
+
+    expect(o).toMatchObject(match);
+  });
+
+  test("It should correctly parse an object with an object for a property", () => {
+    const o = Parser.new(
+      Lexer.new(JSON.stringify({ obj: { test: "hello" }, num: 47 }))
+    ).parseNext();
+    const match = {
+      type: "Object",
+      value: [
+        {
+          name: "obj",
+          value: { type: "Object", value: [{ name: "test", value: "hello" }] },
+        },
+        { name: "num", value: 47 },
+      ],
+    };
+
+    expect(o).toMatchObject(match);
+  });
 });
