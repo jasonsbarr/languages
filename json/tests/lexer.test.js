@@ -7,7 +7,7 @@ describe("Create a Lexer object", () => {
       input: "abc",
       pos: 0,
       col: 1,
-      _tokens: [],
+      tokens: [],
     };
 
     expect(lexer).toMatchObject(match);
@@ -24,7 +24,7 @@ describe("Create a Lexer object", () => {
       input: json,
       pos: 0,
       col: 1,
-      _tokens: [],
+      tokens: [],
     };
 
     expect(lexer).toMatchObject(match);

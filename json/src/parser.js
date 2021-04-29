@@ -1,3 +1,5 @@
+const Lexer = require("./lexer");
+
 function createNode({ type, value, start, end }) {
   return {
     type,
@@ -39,11 +41,21 @@ function getPunc(token) {
 class Parser {
   constructor(lexer) {
     this.lexer = lexer;
-    this.input = lexer.tokens();
+    this.input = lexer.read();
     this.pos = 0;
+    this._ast = null;
   }
 
   static new(lexer) {
     return new Parser(lexer);
   }
+
+  parse() {}
 }
+
+module.exports = {
+  Parser,
+  parse: function (input) {
+    const lexer = Lexer.new(input);
+  },
+};

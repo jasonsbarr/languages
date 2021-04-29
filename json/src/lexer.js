@@ -40,7 +40,7 @@ class Lexer {
     this.input = input;
     this.pos = 0;
     this.col = 1;
-    this._tokens = [];
+    this.tokens = [];
   }
 
   static new(input) {
@@ -74,9 +74,9 @@ class Lexer {
 
   read() {
     while (!this.eoi()) {
-      this._tokens.push(this.readNext());
+      this.tokens.push(this.readNext());
     }
-    return this._tokens;
+    return this.tokens;
   }
 
   readNext() {
@@ -180,10 +180,6 @@ class Lexer {
     // This should never happen because creating JSON should error on invalid input
     // Unless of course the JSON is being formatted by hand and mistakes are made
     throw new Error(`Invalid identifier ${kwStr} at ${start}:${end}`);
-  }
-
-  tokens() {
-    return this._tokens;
   }
 
   readEscaped() {
