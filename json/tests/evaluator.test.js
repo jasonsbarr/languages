@@ -45,3 +45,55 @@ describe("Evaluating arrays", () => {
     expect(evaluate(json)).toEqual(arr);
   });
 });
+
+describe("Evaluating objects", () => {
+  test("Evaluate an empty object", () => {
+    expect(evaluate(JSON.stringify({}))).toEqual({});
+  });
+
+  test("Evaluate a simple object", () => {
+    const json = JSON.stringify({ a: "hi", b: 42 });
+
+    expect(evaluate(json)).toEqual({ a: "hi", b: 42 });
+  });
+
+  test("Evaluate an object with an array for a value", () => {
+    const json = JSON.stringify({ arr: [1, 2, 3], test: "hello" });
+
+    expect(evaluate(json)).toEqual({ arr: [1, 2, 3], test: "hello" });
+  });
+
+  test("Evaluate nested objects", () => {
+    const json = JSON.stringify({
+      obj: { x: 47, y: 42 },
+      a: true,
+      hi: "there",
+    });
+
+    expect(evaluate(json)).toEqual({
+      obj: { x: 47, y: 42 },
+      a: true,
+      hi: "there",
+    });
+  });
+
+  test("Evaluate a complex object", () => {
+    const json = JSON.stringify({
+      obj: {
+        nested: true,
+        obj2: { desc: "This is a nested nested object" },
+        arr: [1, 2, 3, 4],
+      },
+      nil: null,
+    });
+
+    expect(evaluate(json)).toEqual({
+      obj: {
+        nested: true,
+        obj2: { desc: "This is a nested nested object" },
+        arr: [1, 2, 3, 4],
+      },
+      nil: null,
+    });
+  });
+});
