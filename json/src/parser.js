@@ -157,6 +157,12 @@ class Parser {
     return elements;
   }
 
+  parseObjectProperties() {
+    let properties = [];
+
+    return properties;
+  }
+
   skipPunc(expected) {
     const tok = this.peek();
 
