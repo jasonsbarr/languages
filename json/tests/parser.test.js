@@ -18,3 +18,15 @@ describe("Parser class should construct new parser", () => {
     expect(p).toMatchObject(match);
   });
 });
+
+describe("Parse a number token", () => {
+  test("It should correctly parse a Number token", () => {
+    const num = Parser.new(Lexer.new(JSON.stringify(3.1415))).parseNext();
+    const match = {
+      type: "Number",
+      value: 3.1415,
+    };
+
+    expect(num).toMatchObject(match);
+  });
+});

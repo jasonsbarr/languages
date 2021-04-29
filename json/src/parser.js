@@ -50,8 +50,38 @@ class Parser {
     return new Parser(lexer);
   }
 
+  next() {
+    return this.input[this.pos++];
+  }
+
+  peek() {
+    return this.input[this.pos];
+  }
+
+  eoi() {
+    return this.input[this.pos].type == "EOI";
+  }
+
   parse() {
+    if (!this.eoi()) {
+      this._ast = this.parseNext();
+    }
     return this._ast;
+  }
+
+  parseNext() {
+    const tok = this.peek();
+
+    if (isNumber(tok)) {
+      this.next();
+
+      return createNode({
+        type: "Number",
+        value: tok.value,
+        start: tok.start,
+        end: tok.end,
+      });
+    }
   }
 }
 
