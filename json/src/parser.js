@@ -35,3 +35,10 @@ function getPunc(token) {
     `Expected punctuation token, got ${token.type} at ${token.start}:${token.end}`
   );
 }
+
+class Parser {
+  constructor(tokens) {
+    this.input = tokens;
+    this.pos = 0;
+  }
+}
