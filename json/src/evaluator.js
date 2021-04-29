@@ -1,4 +1,4 @@
-const { parser } = require("./parser");
+const { parse } = require("./parser");
 
 function isString(node) {
   return node.type == "String";
@@ -25,10 +25,16 @@ class Evaluator {
     return new Evaluator(ast);
   }
 
-  eval() {}
+  eval(node) {
+    node = node || this.ast;
+
+    if (isString(node) || isNumber(node) || isBoolean(node) || isNull(node)) {
+      return node.value;
+    }
+  }
 }
 
 module.exports = function evaluate(input) {
-  const evaluator = Evaluator.new(parser(input));
+  const evaluator = Evaluator.new(parse(input));
   return evaluator.eval();
 };
