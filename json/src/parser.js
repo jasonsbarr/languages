@@ -120,7 +120,7 @@ class Parser {
   }
 
   parseObject() {
-    const start = this.peek().start();
+    const start = this.peek().start;
 
     this.skipPunc("{");
 
@@ -128,7 +128,7 @@ class Parser {
 
     const tok = this.peek();
 
-    this.skipPunc();
+    this.skipPunc("}");
 
     return createNode({
       type: "Object",
