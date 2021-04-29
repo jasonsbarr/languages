@@ -37,12 +37,12 @@ function getPunc(token) {
 }
 
 class Parser {
-  constructor(tokens) {
-    this.input = tokens;
+  constructor(lexer) {
+    this.input = lexer.getTokens();
     this.pos = 0;
   }
 
   static new(tokens) {
-    return new Parser(tokens);
+    return new Parser(lexer);
   }
 }
