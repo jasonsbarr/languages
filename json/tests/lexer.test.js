@@ -162,6 +162,7 @@ describe("Correctly tokenize an empty object or array", () => {
     const match = [
       { type: "Punc", value: "{" },
       { type: "Punc", value: "}" },
+      { type: "EOI", value: "EOI" },
     ];
 
     expect(lexer.read()).toMatchObject(match);
@@ -173,6 +174,7 @@ describe("Correctly tokenize an empty object or array", () => {
     const match = [
       { type: "Punc", value: "[" },
       { type: "Punc", value: "]" },
+      { type: "EOI", value: "EOI" },
     ];
 
     expect(lexer.read()).toMatchObject(match);
@@ -189,6 +191,7 @@ describe("Correctly tokenize JSON strings", () => {
       { type: "Punc", value: ":" },
       { type: "String", value: "hello" },
       { type: "Punc", value: "}" },
+      { type: "EOI", value: "EOI" },
     ];
 
     expect(lexer.read()).toMatchObject(match);
@@ -205,6 +208,7 @@ describe("Correctly tokenize JSON strings", () => {
       { type: "Punc", value: "," },
       { type: "Number", value: 3.1415 },
       { type: "Punc", value: "]" },
+      { type: "EOI", value: "EOI" },
     ];
 
     expect(lexer.read()).toMatchObject(match);
@@ -223,6 +227,7 @@ describe("Correctly tokenize JSON strings", () => {
       { type: "Punc", value: "," },
       { type: "Number", value: 47 },
       { type: "Punc", value: "]" },
+      { type: "EOI", value: "EOI" },
     ];
 
     expect(lexer.read()).toMatchObject(match);
@@ -248,6 +253,7 @@ describe("Correctly tokenize JSON strings", () => {
       { type: "Punc", value: ":" },
       { type: "String", value: "programming is fun" },
       { type: "Punc", value: "}" },
+      { type: "EOI", value: "EOI" },
     ];
 
     expect(lexer.read()).toMatchObject(match);

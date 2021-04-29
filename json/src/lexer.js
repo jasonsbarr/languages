@@ -76,6 +76,14 @@ class Lexer {
     while (!this.eoi()) {
       this.tokens.push(this.readNext());
     }
+    this.tokens.push(
+      createToken({
+        type: "EOI",
+        value: "EOI",
+        start: this.col,
+        end: this.col,
+      })
+    );
     return this.tokens;
   }
 

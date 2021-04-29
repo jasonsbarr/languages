@@ -50,7 +50,9 @@ class Parser {
     return new Parser(lexer);
   }
 
-  parse() {}
+  parse() {
+    return this._ast;
+  }
 }
 
 module.exports = {

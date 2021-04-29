@@ -7,7 +7,10 @@ describe("Parser class should construct new parser", () => {
     const p = Parser.new(lexer);
     const match = {
       lexer,
-      input: [{ type: "Number", value: 3.1415 }],
+      input: [
+        { type: "Number", value: 3.1415 },
+        { type: "EOI", value: "EOI" },
+      ],
       pos: 0,
       _ast: null,
     };
