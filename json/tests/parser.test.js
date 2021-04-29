@@ -74,6 +74,16 @@ describe("Parse a Null token", () => {
 });
 
 describe("Parse an array", () => {
+  test("It should correctly parse an empty array", () => {
+    const a = Parser.new(Lexer.new(JSON.stringify([]))).parseNext();
+    const match = {
+      type: "Array",
+      value: [],
+    };
+
+    expect(a).toMatchObject(match);
+  });
+
   test("It should correctly parse a flat array", () => {
     const a = Parser.new(
       Lexer.new(JSON.stringify([42, "test", true]))
