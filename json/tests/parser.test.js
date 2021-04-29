@@ -123,3 +123,15 @@ describe("Parse an array", () => {
     expect(a).toMatchObject(match);
   });
 });
+
+describe("Parse an object", () => {
+  test("It should correctly parse an empty object", () => {
+    const o = Parser.new(Lexer.new(JSON.stringify({}))).parseNext();
+    const match = {
+      type: "Object",
+      value: [],
+    };
+
+    expect(o).toMatchObject(match);
+  });
+});
