@@ -111,7 +111,7 @@ class Lexer {
         type: "Punc",
         value: ch,
         start,
-        end: this.pos,
+        end: this.col,
       });
     }
   }
@@ -124,7 +124,7 @@ class Lexer {
       type: "String",
       value,
       start,
-      end: this.pos,
+      end: this.col,
     });
   }
 
@@ -167,7 +167,7 @@ class Lexer {
     const start = this.col;
     let kwStr = "";
     kwStr += this.readWhile((ch) => isChar(ch));
-    const end = this.pos;
+    const end = this.col;
     if (kwStr == "true" || kwStr == "false") {
       return createToken({
         type: "Boolean",
