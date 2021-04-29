@@ -97,6 +97,15 @@ class Parser {
   }
 
   parseArray() {}
+
+  skipPunc(expected) {
+    const tok = this.peek();
+
+    if (tok.value == expected) {
+      this.next(); // skip over the token
+    }
+    throw new Error(`Expected ${expected}, got ${tok.value} at ${tok.start}`);
+  }
 }
 
 module.exports = {
