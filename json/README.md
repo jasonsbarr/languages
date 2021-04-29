@@ -9,3 +9,7 @@ Obviously in a real project you'd just use `JSON.parse`, but this is a learning 
 Throws an error on invalid input.
 
 Implementation language: JavaScript.
+
+## Usage
+
+To start the REPL, use `node src/repl.js`. Then simply enter your code. `JSON.stringify` is called on the input in the REPL, so you don't have to worry about the details of formatting. Just use JavaScript objects, arrays, and primitives.
