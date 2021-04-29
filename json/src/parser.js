@@ -34,7 +34,16 @@ function getPunc(token) {
     return token.value;
   }
   throw new Error(
-    `Expected punctuation token, got ${token.type} at ${token.start}:${token.end}`
+    `Expected punctuation token, got ${token.type} at ${token.start}`
+  );
+}
+
+function match(expected, actual) {
+  if (actual.type == expected) {
+    return true;
+  }
+  throw new Error(
+    `Expected ${expected}, got ${actual.type} at ${actual.start}`
   );
 }
 
