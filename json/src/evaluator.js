@@ -16,6 +16,14 @@ function isNull(node) {
   return node.type == "Null";
 }
 
+function isArray(node) {
+  return node.type == "Array";
+}
+
+function isObject(node) {
+  return node.type == "Object";
+}
+
 class Evaluator {
   constructor(ast) {
     this.ast = ast;
@@ -32,6 +40,10 @@ class Evaluator {
       return node.value;
     }
   }
+
+  evalObject(node) {}
+
+  evalArray(node) {}
 }
 
 module.exports = function evaluate(input) {
