@@ -142,7 +142,10 @@ class Parser {
     let tok = this.peek();
     let elements = [];
 
-    elements.push(this.parseNext());
+    if (this.peek().value != "]") {
+      elements.push(this.parseNext());
+    }
+
     tok = this.peek();
 
     while (isPunc(tok) && getPunc(tok) == ",") {
