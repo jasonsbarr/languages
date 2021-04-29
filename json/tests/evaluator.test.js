@@ -19,3 +19,29 @@ describe("Evaluating primitives", () => {
     expect(evaluate(JSON.stringify(null))).toEqual(null);
   });
 });
+
+describe("Evaluating arrays", () => {
+  test("Evaluate an empty array", () => {
+    expect(evaluate(JSON.stringify([]))).toEqual([]);
+  });
+
+  test("Evaluate one-dimensional arrays", () => {
+    expect(evaluate(JSON.stringify([1, 2, 3]))).toEqual([1, 2, 3]);
+    expect(evaluate(JSON.stringify(["a", "b", "c"]))).toEqual(["a", "b", "c"]);
+  });
+
+  test("Evaluate two-dimensional arrays", () => {
+    const json = JSON.stringify([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
+    const arr = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ];
+
+    expect(evaluate(json)).toEqual(arr);
+  });
+});
