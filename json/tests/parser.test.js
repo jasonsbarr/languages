@@ -196,3 +196,68 @@ describe("Parse an object", () => {
     expect(o).toMatchObject(match);
   });
 });
+
+describe("Exported parse function should work correctly", () => {
+  test("Parse a complex object", () => {
+    const o = parse(
+      JSON.stringify({
+        hi: "there",
+        obj: { meaning: 42 },
+        arr: [1, 2],
+        bool: true,
+        nil: null,
+        evv: {
+          coords: {
+            x: 38.0434,
+            y: -87.5272,
+          },
+        },
+      })
+    );
+    const match = {
+      type: "Object",
+      value: [
+        { name: "hi", value: { type: "String", value: "there" } },
+        {
+          name: "obj",
+          value: {
+            type: "Object",
+            value: [{ name: "meaning", value: { type: "Number", value: 42 } }],
+          },
+        },
+        {
+          name: "arr",
+          value: {
+            type: "Array",
+            value: [
+              { type: "Number", value: 1 },
+              { type: "Number", value: 2 },
+            ],
+          },
+        },
+        { name: "bool", value: { type: "Boolean", value: true } },
+        { name: "nil", value: { type: "Null", value: null } },
+        {
+          name: "evv",
+          value: {
+            type: "Object",
+            value: [
+              {
+                name: "coords",
+                value: {
+                  type: "Object",
+                  value: [
+                    { name: "x", value: { type: "Number", value: 38.0434 } },
+                    { name: "y", value: { type: "Number", value: -87.5272 } },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(o).toMatchObject(match);
+  });
+});
