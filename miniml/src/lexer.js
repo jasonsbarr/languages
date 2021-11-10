@@ -11,6 +11,8 @@ const keywords = [
   "nil",
   "begin",
   "end",
+  "and",
+  "with",
 ];
 
 const operators = [
@@ -33,7 +35,7 @@ const operators = [
   "::",
 ];
 
-const opChars = "+-/*><=!&|";
+const opChars = "+-/*><=!&|:";
 
 const punc = ["(", ")", ".", ",", "[", "]", "{", "}", ";", ":"];
 
@@ -194,8 +196,16 @@ const read = (input) => {
   const readOp = () => {
     const str = readWhile(isOpChar);
 
+    if (str === ":") {
+      return makeToken("punc", str);
+    }
+
     if (isOperator(str)) {
       return makeToken("operator", str);
+    }
+
+    if (ch === "\n") {
+      return makeToken("newline", ch);
     }
 
     croak(`Unrecognized token ${str} at line ${line}, col ${col}`);
