@@ -5,3 +5,5 @@ A simple functional language with type inference based on Luca Cardelli's 1987 p
 See also the F# implementation of Cardelli's algorithm by [Dave Thomas](https://github.com/7sharp9/write-you-an-inference-in-fsharp/blob/master/HMBasic/HMBasic.fs) and the Python version by [Rob Smallshire](https://github.com/rob-smallshire/hindley-milner-python/blob/master/inference.py).
 
 MiniML extends this simple type inference scheme to include lists, records, and variants.
+
+Implementation language: JavaScript.
