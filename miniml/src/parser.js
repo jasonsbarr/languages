@@ -110,7 +110,7 @@ const parser = (tokens) => {
   const peek = () => tokens[pos];
   const skip = () => ++pos;
   const next = () => tokens[++pos];
-  const eof = () => pos > tokens.length;
+  const eof = () => pos >= tokens.length;
   const lookahead = (i) => tokens[pos + i];
   const croak = (msg) => {
     throw new SyntaxError(msg);
@@ -134,13 +134,28 @@ const parser = (tokens) => {
    *  | Func expr*
    */
   const parseApply = (func) => {
-    let exprs = [];
+    let args = [];
 
     while (!eof() && !matchExprTerm(peek())) {
-      exprs.push(parseExpr());
+      args.push(parseExpr());
     }
 
-    return func;
+    if (args.length === 0) {
+      croak(
+        `Function application must have at least 1 argument at line ${func.loc.line}, col ${func.loc.col}`
+      );
+    }
+
+    const makeApply = (func, args) =>
+      args.length === 1
+        ? Apply({ arg: fst(args), loc: func.loc })
+        : Apply({
+            arg: last(args),
+            func: makeApply(func, args.slice(0, -1)),
+            loc: func.loc,
+          });
+
+    return makeApply(func, args);
   };
 
   const maybeApply = (expr) => {
@@ -183,8 +198,8 @@ const parser = (tokens) => {
         return expr;
       }
 
-      // must be atomic token
-      tok = next();
+      // must be atomic token - skip it to advance the stream
+      skip();
 
       if (matchNum(tok)) {
         return Num({ value: tok.value, loc: { line: tok.line, col: tok.col } });

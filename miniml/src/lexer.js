@@ -64,8 +64,8 @@ const isHexadecimalChar = (char) => /[0-9a-fA-F]/.test(char);
 
 const read = (input) => {
   let pos = 0;
-  let line = 0;
-  let col = 0;
+  let line = 1;
+  let col = 1;
   let tokens = [];
   const peek = () => input.charAt(pos);
   const next = () => {
@@ -78,7 +78,7 @@ const read = (input) => {
 
     return input.charAt(pos++);
   };
-  const eof = () => peek() === "";
+  const eof = () => input.charAt(pos) === "";
   const croak = (msg) => {
     throw new SyntaxError(msg);
   };
@@ -93,7 +93,7 @@ const read = (input) => {
   const readWhile = (pred) => {
     let str = "";
 
-    while (pred(peek())) {
+    while (!eof() && pred(peek())) {
       str += next();
     }
 
@@ -146,7 +146,7 @@ const read = (input) => {
     let str = "";
     next();
 
-    while (!eoi()) {
+    while (!eof()) {
       let ch = next();
 
       if (escaped) {
@@ -209,10 +209,6 @@ const read = (input) => {
       return makeToken("operator", str);
     }
 
-    if (ch === "\n") {
-      return makeToken("newline", ch);
-    }
-
     croak(`Unrecognized token ${str} at line ${line}, col ${col}`);
   };
 
@@ -227,7 +223,7 @@ const read = (input) => {
 
     if (ch === "#") {
       // skip comment
-      readWhile((ch) => ch !== "\n");
+      readWhile((ch) => /\r?\n/.test(ch));
       return;
     }
 
@@ -249,6 +245,11 @@ const read = (input) => {
 
     if (isPunc(ch)) {
       return makeToken("punc", ch);
+    }
+
+    if (/\r?\n/.test(ch)) {
+      next();
+      return makeToken("newline", ch);
     }
 
     croak(`Unrecognized character ${ch} at line ${line}, col ${col}`);
