@@ -7,3 +7,7 @@ A repository of toy programming languages and other language-related tools I'm b
 ### JSON
 
 A simple interpreter that transforms valid JSON strings into JavaScript objects. ([docs](json/README.md))
+
+### MiniML
+
+A small functional language with type inference and immutable lists, records, and variants with pattern matching. ([docs](miniml/README.md))
