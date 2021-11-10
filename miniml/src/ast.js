@@ -35,6 +35,12 @@ const variantInfos = [
    */
   VariantInfo("Nil"),
   /**
+   * Ident of {
+   *  name: String
+   * }
+   */
+  VariantInfo("Ident"),
+  /**
    * Func of {
    *  param: String,
    *  body: Ast
@@ -82,6 +88,7 @@ export const {
   Str,
   Bool,
   Nil,
+  Ident,
   Func,
   Assign,
   Let,

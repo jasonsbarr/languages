@@ -20,6 +20,8 @@ const operators = [
   "-",
   "/",
   "*",
+  "**",
+  "%",
   ">",
   "<",
   "<=",
@@ -33,9 +35,12 @@ const operators = [
   "++",
   "@",
   "::",
+  "->",
+  "|",
+  "|>",
 ];
 
-const opChars = "+-/*><=!&|:";
+const opChars = "+-/*><=!&|:%";
 
 const punc = ["(", ")", ".", ",", "[", "]", "{", "}", ";", ":"];
 
@@ -219,6 +224,12 @@ const read = (input) => {
     }
 
     let ch = peek();
+
+    if (ch === "#") {
+      // skip comment
+      readWhile((ch) => ch !== "\n");
+      return;
+    }
 
     if (isDigit(ch)) {
       return readNumber();
