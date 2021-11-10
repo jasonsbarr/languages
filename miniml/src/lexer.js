@@ -65,7 +65,7 @@ const isHexadecimalChar = (char) => /[0-9a-fA-F]/.test(char);
 const read = (input) => {
   let pos = 0;
   let line = 1;
-  let col = 1;
+  let col = 0;
   let tokens = [];
   const peek = () => input.charAt(pos);
   const next = () => {
