@@ -58,6 +58,14 @@ const variantInfos = [
    */
   VariantInfo("Let"),
   /**
+   * VarDecl of {
+   *  name: String,
+   *  expr: Assign
+   *  rec: Boolean
+   * }
+   */
+  VariantInfo("VarDecl"),
+  /**
    * Apply of {
    *  arg: Ast,
    *  func: Ast
@@ -68,4 +76,15 @@ const variantInfos = [
 
 export const Ast = createType("Ast", variantInfos);
 
-export const { Program, Num, Str, Bool, Nil, Func, Assign, Let, Apply } = Ast;
+export const {
+  Program,
+  Num,
+  Str,
+  Bool,
+  Nil,
+  Func,
+  Assign,
+  Let,
+  VarDecl,
+  Apply,
+} = Ast;
