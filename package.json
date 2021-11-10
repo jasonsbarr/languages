@@ -31,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/jasonsbarr/languages/issues"
   },
-  "homepage": "https://github.com/jasonsbarr/languages#readme"
+  "homepage": "https://github.com/jasonsbarr/languages#readme",
+  "dependencies": {
+    "@jasonsbarr/functional-core": "^0.4.1"
+  }
 }
