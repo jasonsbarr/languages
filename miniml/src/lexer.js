@@ -9,6 +9,8 @@ const keywords = [
   "true",
   "false",
   "nil",
+  "begin",
+  "end",
 ];
 
 const operators = [
