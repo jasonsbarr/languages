@@ -58,7 +58,7 @@ const isOperator = (str) => operators.includes(str);
 
 const isPunc = (char) => punc.includes(char);
 
-const isWhitespace = (char) => / \t/.test(char);
+const isWhitespace = (char) => /[ \t]/.test(char);
 
 const isHexadecimalChar = (char) => /[0-9a-fA-F]/.test(char);
 
