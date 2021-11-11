@@ -146,7 +146,12 @@ const parser = (tokens) => {
     let args = [];
     let tok = peek();
 
-    while (!eof() && !matchExprTerm(tok) && !matchExprSep(tok)) {
+    while (
+      !eof() &&
+      !matchExprTerm(tok) &&
+      !matchExprSep(tok) &&
+      !matchKeyword(tok)
+    ) {
       args.push(parseExpr());
       tok = peek();
     }
@@ -279,11 +284,17 @@ const parser = (tokens) => {
     return Let({ name, expr, body, rec, loc });
   };
 
+  const parseFun = () => {};
+
   const parseKeyword = () => {
     const tok = peek();
 
     if (matchLet(tok)) {
       return parseLet();
+    }
+
+    if (matchFun(tok)) {
+      return parseFun();
     }
   };
 
