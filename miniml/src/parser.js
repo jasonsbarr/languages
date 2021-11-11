@@ -290,6 +290,8 @@ const parser = (tokens) => {
   /**
    * expr ->
    *    atom
+   *  | VarDecl
+   *  | Let
    */
   const parseExpr = () => {
     if (matchKeyword(peek())) {
@@ -310,7 +312,7 @@ const parser = (tokens) => {
     let expr = parseExpr();
     let tok = peek();
 
-    if (!matchExprSep(tok) && !matchExprTerm(tok)) {
+    if (!matchExprSep(tok) && !matchExprTerm(tok) && !matchKeyword(tok)) {
       expr = parseApply(expr);
     }
 
