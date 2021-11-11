@@ -244,6 +244,7 @@ const read = (input) => {
     }
 
     if (isPunc(ch)) {
+      next();
       return makeToken("punc", ch);
     }
 
