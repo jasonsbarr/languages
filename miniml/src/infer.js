@@ -3,11 +3,14 @@ import {
   VariantInfo,
 } from "@jasonsbarr/functional-core/lib/types/createType.js";
 import { switchType } from "@jasonsbarr/functional-core/lib/types/switchType.js";
+import { Record } from "@jasonsbarr/functional-core/lib/types/Record.js";
+import { List } from "@jasonsbarr/collections/lib/List.js";
+import { Set } from "@jasonsbarr/collections/lib/Set.js";
 
-const variantInfos = [
+const exprVariants = [
   /**
    * Expression literals
-   * [EType] of { value: type }
+   * value of type
    */
   VariantInfo("ENum"),
   VariantInfo("EBool"),
@@ -15,7 +18,7 @@ const variantInfos = [
   VariantInfo("ENil"),
   /**
    * Identifiers
-   * EVar of { name: String }
+   * EVar of String
    */
   VariantInfo("EVar"),
   /**
@@ -52,4 +55,60 @@ const variantInfos = [
    * }
    */
   VariantInfo("ELetrec"),
+];
+
+const Expr = createType("Expr", exprVariants);
+const { ENum, EBool, EStr, ENil, EVar, EFunc, EApply, ELet, ELetrec } = Expr;
+const getVal = ({ value }) => value;
+
+const exprToString = (expr) =>
+  switchType(
+    Expr,
+    {
+      ENum: getVal,
+      EBool: getVal,
+      EStr: getVal,
+      ENil: () => "nil",
+      EVar: ({ value: name }) => name,
+      EFunc: ({ value: { name, body } }) =>
+        `fun ${name} -> ${exprToString(body)}`,
+      EApply: ({ value: { arg, func } }) =>
+        `${exprToString(arg)} ${exprToString(func)}`,
+      ELet: ({ value: { name, defn, body } }) =>
+        `let ${name} = ${exprToString(defn)} in ${exprToString(body)}`,
+      ELetrec: ({ value: { name, defn, body } }) =>
+        `let rec ${name} = ${exprToString(defn)} in ${exprToString(body)}`,
+    },
+    expr
+  );
+
+/**
+ * A type variable stands for an arbitrary type. All TyVars have a unique id,
+ * but names are only assigned lazily when needed
+ * TyVar of {
+ *  id: int,
+ *  instance: Option<Type>
+ *  name: Option<String>
+ * }
+ */
+const TyVar = Record("id", "instance", "name");
+
+/**
+ * An n-ary type constructor which builds a new type
+ * TyOp of {
+ *  name: String,
+ *  types: List<Type>
+ * }
+ */
+const TyOp = Record("name", "types");
+
+const typeVariants = [
+  /**
+   * TypeVariable of TyVar
+   */
+  VariantInfo("TypeVariable"),
+  /**
+   * TypeOperator of TyOp
+   */
+  VariantInfo("TypeOperator"),
 ];
