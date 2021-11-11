@@ -112,3 +112,6 @@ const typeVariants = [
    */
   VariantInfo("TypeOperator"),
 ];
+
+const Type = createType("Type", typeVariants);
+const { TypeVariable, TypeOperator } = Type;
