@@ -6,7 +6,6 @@ import {
   Nil,
   Ident,
   Func,
-  Assign,
   Let,
   VarDecl,
   Apply,
@@ -235,7 +234,15 @@ const parser = (tokens) => {
     );
   };
 
-  const parseKeyword = () => {};
+  const parseLet = () => {};
+
+  const parseKeyword = () => {
+    const tok = peek();
+
+    if (matchLet(tok)) {
+      return parseLet();
+    }
+  };
 
   /**
    * expr ->

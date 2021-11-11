@@ -53,20 +53,11 @@ const variantInfos = [
    *  expr: Ast
    * }
    */
-  VariantInfo("Assign"),
-  /**
-   * Let of {
-   *  name: String,
-   *  decl: Assign,
-   *  rec: Boolean
-   *  body: Ast
-   * }
-   */
   VariantInfo("Let"),
   /**
    * VarDecl of {
    *  name: String,
-   *  expr: Assign
+   *  expr: Ast
    *  rec: Boolean
    * }
    */
@@ -90,7 +81,6 @@ export const {
   Nil,
   Ident,
   Func,
-  Assign,
   Let,
   VarDecl,
   Apply,
