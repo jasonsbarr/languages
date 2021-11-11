@@ -6,6 +6,13 @@ import { switchType } from "@jasonsbarr/functional-core/lib/types/switchType.js"
 import { Record } from "@jasonsbarr/functional-core/lib/types/Record.js";
 import { List } from "@jasonsbarr/collections/lib/List.js";
 import { Set } from "@jasonsbarr/collections/lib/Set.js";
+import {
+  Option,
+  Some,
+  None,
+} from "@jasonsbarr/functional-core/lib/types/Option.js";
+import { length } from "@jasonsbarr/iterable/lib/length.js";
+import { join } from "@jasonsbarr/iterable/lib/join.js";
 
 const exprVariants = [
   /**
@@ -91,7 +98,7 @@ const exprToString = (expr) =>
  *  name: Option<String>
  * }
  */
-const TyVar = Record("id", "instance", "name");
+const TyVar = (id, instance, name) => ({ id, instance, name });
 
 /**
  * An n-ary type constructor which builds a new type
@@ -100,7 +107,7 @@ const TyVar = Record("id", "instance", "name");
  *  types: List<Type>
  * }
  */
-const TyOp = Record("name", "types");
+const TyOp = (name, types) => ({ name, types });
 
 const typeVariants = [
   /**
@@ -115,3 +122,76 @@ const typeVariants = [
 
 const Type = createType("Type", typeVariants);
 const { TypeVariable, TypeOperator } = Type;
+
+let nextVariableId = 0;
+let nextUniqueName = "a";
+
+const makeVariable = () => {
+  const newVar = TyVar(nextVariableId, None(), None());
+  nextVariableId++;
+  return TypeVariable(newVar);
+};
+
+const getNextUniqueName = () => {
+  const name = nextUniqueName;
+  nextUniqueName = String.fromCharCode(nextUniqueName.charCodeAt(0) + 1);
+  return name;
+};
+
+/**
+ * Assign name to TyVar
+ * Type -> String
+ *
+ * Mutates ty.value.name if name is not already assigned
+ * Should only pass TypeVariable instances to this function,
+ * but I'll define a case for TypeOperators anyway, just in case
+ */
+const getVariableName = (ty) =>
+  switchType(
+    Type,
+    {
+      TypeVariable: (tyvar) => {
+        return switchType(
+          Option,
+          {
+            Some: ({ value: name }) => name,
+            None: () => {
+              const newName = getNextUniqueName();
+              tyvar.value.name = Some(newName);
+              return newName;
+            },
+          },
+          tyvar.value.name
+        );
+      },
+      TypeOperator: ({ value: { name } }) => name,
+    },
+    ty
+  );
+
+const typeToString = (ty) =>
+  switchType(
+    Type,
+    {
+      TypeVariable: ({ value: { instance } }) =>
+        instance.fold(
+          () => getVariableName(ty),
+          () => typeToString(instance)
+        ),
+      TypeOperator: ({ value: { name, types } }) => {
+        switch (length(types)) {
+          case 0:
+            return name;
+
+          case 2:
+            return `${typeToString(types.atUnsafe(0))} ${name} ${typeToString(
+              types.atUnsafe(1)
+            )}`;
+
+          default:
+            return `${name} ${join(" ", types.map(typeToString))}`;
+        }
+      },
+    },
+    ty
+  );
