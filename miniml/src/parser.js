@@ -17,7 +17,7 @@ import read from "./lexer.js";
 const match = (name) => (token) => name === token.type || name === token.value;
 const matchNum = match("number");
 const matchStr = match("string");
-const matchBool = match("bool");
+const matchBool = match("boolean");
 const matchIdentifier = match("identifier");
 const matchLet = match("let");
 const matchRec = match("rec");
@@ -257,7 +257,6 @@ const parser = (tokens) => {
    *  | Apply
    */
   const parseExpression = () => {
-    console.log("parseExpression");
     let expr = parseExpr();
     let tok = peek();
 
