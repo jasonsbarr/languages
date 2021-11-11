@@ -103,8 +103,6 @@ const matchBinOp = (token) =>
 const matchUnOp = (token) =>
   matchMinus(token) || matchNot(token) || matchMul(token);
 
-const matchExprTerm = (token) => matchSemi(token) || matchNewline(token);
-
 const parser = (tokens) => {
   let pos = 0;
   const peek = () => tokens[pos];
@@ -127,6 +125,8 @@ const parser = (tokens) => {
       );
     }
   };
+  const matchExprTerm = (token) =>
+    matchSemi(token) || matchNewline(token) || eof();
 
   /**
    * Apply ->
@@ -142,26 +142,20 @@ const parser = (tokens) => {
 
     if (args.length === 0) {
       croak(
-        `Function application must have at least 1 argument at line ${func.loc.line}, col ${func.loc.col}`
+        `Function application must have at least 1 argument at line ${func.value.loc.line}, col ${func.value.loc.col}`
       );
     }
 
     const makeApply = (func, args) =>
       args.length === 1
-        ? Apply({ arg: fst(args), loc: func.loc })
+        ? Apply({ arg: fst(args), func, loc: func.loc })
         : Apply({
-            arg: last(args),
+            arg: lst(args),
             func: makeApply(func, args.slice(0, -1)),
             loc: func.loc,
           });
 
     return makeApply(func, args);
-  };
-
-  const maybeApply = (expr) => {
-    expr = expr();
-
-    return !matchExprTerm(peek()) ? parseApply(expr) : expr;
   };
 
   const maybeBinary = (left, prec = 0) => {
@@ -177,71 +171,81 @@ const parser = (tokens) => {
    *  | nil
    *  | identifier
    */
-  const parseAtom = () =>
-    maybeApply(() => {
-      let tok = peek();
+  const parseAtom = () => {
+    let tok = peek();
 
-      if (matchLparen(tok)) {
-        // skip left paren
-        skip();
-
-        if (matchRparen(peek())) {
-          // skip right paren
-          skip();
-          return Nil({ value: null, loc: { line: tok.line, col: tok.col } });
-        }
-
-        const expr = parseExpr();
-
-        skipIf(matchRparen, ")");
-
-        return expr;
-      }
-
-      // must be atomic token - skip it to advance the stream
+    if (matchLparen(tok)) {
+      // skip left paren
       skip();
 
-      if (matchNum(tok)) {
-        return Num({ value: tok.value, loc: { line: tok.line, col: tok.col } });
+      if (matchRparen(peek())) {
+        // skip right paren
+        skip();
+        return Nil({ value: null, loc: { line: tok.line, col: tok.col } });
       }
 
-      if (matchStr(tok)) {
-        return Str({ value: tok.value, loc: { line: tok.line, col: tok.col } });
-      }
+      const expr = parseExpr();
 
-      if (matchBool(tok)) {
-        return Bool({
-          value: tok.value,
-          loc: { line: tok.line, col: tok.col },
-        });
-      }
+      skipIf(matchRparen, ")");
 
-      if (matchNil(tok)) {
-        return Nil({ value: tok.value, loc: { line: tok.line, col: tok.col } });
-      }
+      return expr;
+    }
 
-      if (matchIdentifier(tok)) {
-        return Ident({
-          name: tok.value,
-          loc: { line: tok.line, col: tok.col },
-        });
-      }
+    // must be atomic token - skip it to advance the stream
+    skip();
 
-      croak(
-        `Unrecognized token ${tok.value} at line ${tok.line}, col ${tok.col}`
-      );
-    });
+    if (matchNum(tok)) {
+      return Num({ value: tok.value, loc: { line: tok.line, col: tok.col } });
+    }
 
-  const parseExpr = () => {
-    const expr = maybeApply(() => maybeBinary(parseAtom(), 0));
+    if (matchStr(tok)) {
+      return Str({ value: tok.value, loc: { line: tok.line, col: tok.col } });
+    }
 
-    return maybeApply(() => maybeBinary(expr, 0));
+    if (matchBool(tok)) {
+      return Bool({
+        value: tok.value,
+        loc: { line: tok.line, col: tok.col },
+      });
+    }
+
+    if (matchNil(tok)) {
+      return Nil({ value: tok.value, loc: { line: tok.line, col: tok.col } });
+    }
+
+    if (matchIdentifier(tok)) {
+      return Ident({
+        name: tok.value,
+        loc: { line: tok.line, col: tok.col },
+      });
+    }
+
+    croak(
+      `Unrecognized token ${tok.value} at line ${tok.line}, col ${tok.col}`
+    );
   };
 
+  /**
+   * expr ->
+   *    atom
+   */
+  const parseExpr = () => {
+    const expr = maybeBinary(parseAtom(), 0);
+
+    return maybeBinary(expr, 0);
+  };
+
+  /**
+   * expression ->
+   *    expr
+   *  | Apply
+   */
   const parseExpression = () => {
     const expr = parseExpr();
 
-    skipIf(matchExprTerm, "newline or ;");
+    if (!matchExprTerm(peek())) {
+      return parseApply(expr);
+    }
 
     return expr;
   };
@@ -251,12 +255,11 @@ const parser = (tokens) => {
 
     while (!eof()) {
       prog.push(parseExpression());
+      skipIf(matchExprTerm, "newline or ;");
     }
 
     return Program({
       prog,
-      start: { line: fst(prog).line, col: fst(prog).col },
-      end: { line: lst(prog).line, col: lst(prog).col },
     });
   };
 
