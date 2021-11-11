@@ -3,7 +3,6 @@ import {
   VariantInfo,
 } from "@jasonsbarr/functional-core/lib/types/createType.js";
 import { switchType } from "@jasonsbarr/functional-core/lib/types/switchType.js";
-import { Record } from "@jasonsbarr/functional-core/lib/types/Record.js";
 import { List } from "@jasonsbarr/collections/lib/List.js";
 import { Set } from "@jasonsbarr/collections/lib/Set.js";
 import {
@@ -14,6 +13,8 @@ import {
 import { length } from "@jasonsbarr/iterable/lib/length.js";
 import { join } from "@jasonsbarr/iterable/lib/join.js";
 import { cons } from "@jasonsbarr/collections/lib/List.js";
+import { fromCharCode } from "@jasonsbarr/functional-core/lib/string/fromCharCode.js";
+import { charCodeAt } from "@jasonsbarr/functional-core/lib/string/charCodeAt.js";
 
 const fst = (pair) => pair[0];
 const snd = (pair) => pair[1];
@@ -138,7 +139,7 @@ const makeVariable = () => {
 
 const getNextUniqueName = () => {
   const name = nextUniqueName;
-  nextUniqueName = String.fromCharCode(nextUniqueName.charCodeAt(0) + 1);
+  nextUniqueName = fromCharCode(charCodeAt(0, nextUniqueName) + 1);
   return name;
 };
 
