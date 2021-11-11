@@ -13,6 +13,10 @@ import {
 } from "@jasonsbarr/functional-core/lib/types/Option.js";
 import { length } from "@jasonsbarr/iterable/lib/length.js";
 import { join } from "@jasonsbarr/iterable/lib/join.js";
+import { cons } from "@jasonsbarr/collections/lib/List.js";
+
+const fst = (pair) => pair[0];
+const snd = (pair) => pair[1];
 
 const exprVariants = [
   /**
@@ -195,3 +199,21 @@ const typeToString = (ty) =>
     },
     ty
   );
+
+/**
+ * env of List<(String * Type)>
+ */
+const env = (...pairs) => {
+  let temp = [];
+  for (let pair of pairs) {
+    temp.push(cons(fst(pair), snd(pair)));
+  }
+  return List.of(temp);
+};
+
+const makeFunctionType = (from, to) =>
+  TypeOperator({ name: "->", types: List(from, to) });
+const numType = () => TypeOperator({ name: "Number", types: List.empty() });
+const boolType = () => TypeOperator({ name: "Boolean", types: List.empty() });
+const strType = () => TypeOperator({ name: "String", types: List.empty() });
+const nilType = () => TypeOperator({ name: "Nil", types: List.empty() });
