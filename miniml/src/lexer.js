@@ -42,11 +42,11 @@ const operators = [
 
 const opChars = "+-/*><=!&|:%";
 
-const punc = ["(", ")", ".", ",", "[", "]", "{", "}", ";", ":"];
+const punc = ["(", ")", ".", ",", "[", "]", "{", "}", ";", ":", "'"];
 
 const isOpChar = (char) => opChars.indexOf(char) > -1;
 
-const isIdStart = (char) => /[a-zA-Z_$']/.test(char);
+const isIdStart = (char) => /[a-zA-Z_$]/.test(char);
 
 const isIdChar = (char) => /[a-zA-Z0-9_$']/.test(char);
 

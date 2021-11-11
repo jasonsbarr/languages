@@ -103,12 +103,20 @@ const matchBinOp = (token) =>
 const matchUnOp = (token) =>
   matchMinus(token) || matchNot(token) || matchMul(token);
 
+// match valid expression separators
+const matchExprSep = (token) =>
+  matchRparen(token) ||
+  matchRbracket(token) ||
+  matchRbrace(token) ||
+  matchComma(token) ||
+  matchDot(token);
+
 const parser = (tokens) => {
   let pos = 0;
   const peek = () => tokens[pos];
   const skip = () => ++pos;
   const next = () => tokens[++pos];
-  const eof = () => pos >= tokens.length;
+  const eof = () => peek() === undefined;
   const lookahead = (i) => tokens[pos + i];
   const croak = (msg) => {
     throw new SyntaxError(msg);
@@ -135,9 +143,11 @@ const parser = (tokens) => {
    */
   const parseApply = (func) => {
     let args = [];
+    let tok = peek();
 
-    while (!eof() && !matchExprTerm(peek())) {
+    while (!eof() && !matchExprTerm(tok) && !matchExprSep(tok)) {
       args.push(parseExpr());
+      tok = peek();
     }
 
     if (args.length === 0) {
@@ -184,7 +194,7 @@ const parser = (tokens) => {
         return Nil({ value: null, loc: { line: tok.line, col: tok.col } });
       }
 
-      const expr = parseExpr();
+      const expr = parseExpression();
 
       skipIf(matchRparen, ")");
 
@@ -225,11 +235,17 @@ const parser = (tokens) => {
     );
   };
 
+  const parseKeyword = () => {};
+
   /**
    * expr ->
    *    atom
    */
   const parseExpr = () => {
+    if (matchKeyword(peek())) {
+      return parseKeyword();
+    }
+
     const expr = maybeBinary(parseAtom(), 0);
 
     return maybeBinary(expr, 0);
@@ -241,13 +257,15 @@ const parser = (tokens) => {
    *  | Apply
    */
   const parseExpression = () => {
-    const expr = parseExpr();
+    console.log("parseExpression");
+    let expr = parseExpr();
+    let tok = peek();
 
-    if (!matchExprTerm(peek())) {
-      return parseApply(expr);
+    if (!matchExprSep(tok) && !matchExprTerm(tok)) {
+      expr = parseApply(expr);
     }
 
-    return expr;
+    return maybeBinary(expr, 0);
   };
 
   const parseProgram = () => {
@@ -256,6 +274,11 @@ const parser = (tokens) => {
     while (!eof()) {
       prog.push(parseExpression());
       skipIf(matchExprTerm, "newline or ;");
+
+      // if multiple terminators, skip them all
+      while (!eof() && matchExprTerm(peek())) {
+        skip();
+      }
     }
 
     return Program({
