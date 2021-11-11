@@ -284,7 +284,47 @@ const parser = (tokens) => {
     return Let({ name, expr, body, rec, loc });
   };
 
-  const parseFun = () => {};
+  const parseParamList = (loc) => {
+    let params = [];
+
+    while (!matchArrow(peek())) {
+      if (!matchIdentifier(peek())) {
+        croak(
+          `Function parameter must be a valid identifier at line ${loc.line}, col ${loc.col}`
+        );
+      }
+      params.push(parseAtom().value.name);
+    }
+
+    return params;
+  };
+
+  const parseFun = () => {
+    let tok = peek();
+    const loc = { line: tok.line, col: tok.col };
+
+    // skip fun
+    skip();
+
+    const params = parseParamList(loc);
+
+    if (params.length === 0) {
+      croak(
+        `Function expression must have at least 1 parameter at line ${tok.line}, col ${tok.col}`
+      );
+    }
+
+    skipIf(matchArrow, "->");
+
+    const body = parseExpression();
+
+    const makeFunc = (params) =>
+      params.length === 1
+        ? Func({ param: fst(params), body, loc })
+        : Func({ param: fst(params), body: makeFunc(params.slice(1)), loc });
+
+    return makeFunc(params);
+  };
 
   const parseKeyword = () => {
     const tok = peek();
@@ -303,6 +343,7 @@ const parser = (tokens) => {
    *    atom
    *  | VarDecl
    *  | Let
+   *  | Func
    */
   const parseExpr = () => {
     if (matchKeyword(peek())) {
