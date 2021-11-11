@@ -48,9 +48,11 @@ const variantInfos = [
    */
   VariantInfo("Func"),
   /**
-   * Assign of {
-   *  name: String
-   *  expr: Ast
+   * Let of {
+   *  name: String,
+   *  expr: Ast,
+   *  body: Ast,
+   *  rec: Boolean
    * }
    */
   VariantInfo("Let"),

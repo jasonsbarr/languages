@@ -21,6 +21,7 @@ const matchIdentifier = match("identifier");
 const matchLet = match("let");
 const matchRec = match("rec");
 const matchFun = match("fun");
+const matchIn = match("in");
 const matchIf = match("if");
 const matchThen = match("then");
 const matchElse = match("else");
@@ -68,6 +69,7 @@ const matchKeyword = (token) =>
   matchLet(token) ||
   matchRec(token) ||
   matchFun(token) ||
+  matchIn(token) ||
   matchIf(token) ||
   matchThen(token) ||
   matchElse(token) ||
@@ -234,7 +236,48 @@ const parser = (tokens) => {
     );
   };
 
-  const parseLet = () => {};
+  const parseLet = () => {
+    let tok = peek();
+
+    const loc = { line: tok.line, col: tok.col };
+
+    // skip let
+    tok = next();
+
+    const rec = matchRec(tok);
+
+    if (matchRec(tok)) {
+      // skip rec
+      skip();
+    }
+
+    tok = peek();
+
+    if (!matchIdentifier(tok)) {
+      croak(
+        `Expected identifier, got ${tok.value} at line ${tok.line}, col ${tok.col}`
+      );
+    }
+
+    const name = parseAtom().value.name;
+
+    skipIf(matchBind, "=");
+
+    const expr = parseExpression();
+
+    tok = peek();
+
+    if (!matchIn(tok)) {
+      return VarDecl({ name, expr, rec, loc });
+    }
+
+    // skip in
+    skip();
+
+    const body = parseExpression();
+
+    return Let({ name, expr, body, rec, loc });
+  };
 
   const parseKeyword = () => {
     const tok = peek();
