@@ -202,7 +202,7 @@ const typeToString = (ty) =>
   );
 
 /**
- * env of List<(String * Type)>
+ * env of List<(String, Type)>
  */
 const env = (...pairs) => {
   let temp = [];
@@ -211,6 +211,8 @@ const env = (...pairs) => {
   }
   return List.of(temp);
 };
+
+const extendEnv = (e, pair) => cons(cons(fst(pair), snd(pair)), e);
 
 const makeFunctionType = (from, to) =>
   TypeOperator({ name: "->", types: List(from, to) });
