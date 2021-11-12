@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/jasonsbarr/languages#readme",
   "dependencies": {
-    "@jasonsbarr/collections": "^0.4.1",
-    "@jasonsbarr/functional-core": "^0.4.1"
+    "@jasonsbarr/collections": "^0.5.0",
+    "@jasonsbarr/functional-core": "^0.5.0"
   }
 }
