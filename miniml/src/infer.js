@@ -78,17 +78,8 @@ const exprVariants = [
 ];
 
 export const Expr = createType("Expr", exprVariants);
-export const {
-  ENum,
-  EBool,
-  EStr,
-  ENil,
-  EVar,
-  EFunc,
-  EApply,
-  ELet,
-  ELetrec,
-} = Expr;
+export const { ENum, EBool, EStr, ENil, EVar, EFunc, EApply, ELet, ELetrec } =
+  Expr;
 const getVal = ({ value }) => value;
 
 export const exprToString = (expr) =>
@@ -143,8 +134,8 @@ const typeVariants = [
   VariantInfo("TypeOperator"),
 ];
 
-export const Type = createType("Type", typeVariants);
-export const { TypeVariable, TypeOperator } = Type;
+const Type = createType("Type", typeVariants);
+const { TypeVariable, TypeOperator } = Type;
 
 let nextVariableId = 0;
 let nextUniqueName = "a";
