@@ -19,6 +19,7 @@ import { charCodeAt } from "@jasonsbarr/functional-core/lib/string/charCodeAt.js
 import { equals } from "@jasonsbarr/functional-core/lib/object/equals.js";
 import { not } from "@jasonsbarr/functional-core/lib/helpers/not.js";
 import { noop } from "@jasonsbarr/functional-core/lib/helpers/noop.js";
+import { isNotNan } from "@jasonsbarr/functional-core/lib/predicates/isNotNaN.js";
 
 const fst = (pair) => pair[0];
 const snd = (pair) => pair[1];
@@ -277,6 +278,10 @@ const occursInType = (v, t2) =>
 
 const occursIn = (t, types) => types.includes((t2) => occursInType(t, t2));
 
+const isNumberLiteral = (name) => isNotNan(Number(name));
+const isBooleanLiteral = (name) => name === "true" || name === "false";
+const isNilLiteral = (name) => name === "nil";
+
 const isGeneric = (v, nonGeneric) => not(nonGeneric.includes(v));
 
 // Makes a copy of a type expression.
@@ -315,7 +320,13 @@ const getType = (name, env, nonGeneric) =>
   env
     .find(([n, _]) => equals(n, name))
     .fold(
-      () => fail(`Undefined symbol ${name}`),
+      () => {
+        if (isNumberLiteral(name)) return numType;
+        if (isBooleanLiteral(name)) return boolType;
+        if (isNilLiteral(name)) return nilType;
+
+        fail(`Undefined symbol ${name}`);
+      },
       ({ value }) => fresh(snd(value), nonGeneric)
     );
 
