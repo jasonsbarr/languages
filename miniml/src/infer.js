@@ -230,7 +230,7 @@ export const env = (...pairs) => {
   return List.of(temp);
 };
 
-const extendEnv = (e, pair) => cons(cons(fst(pair), snd(pair)), e);
+const extendEnv = (e, pair) => cons(pair, e);
 
 const makeFunctionType = (from, to) => TypeOperator(TyOp("->", List(from, to)));
 
