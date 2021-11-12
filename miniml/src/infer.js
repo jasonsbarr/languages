@@ -349,7 +349,7 @@ const unify = (t1, t2) => {
 // language simply by having a predefined set of identifiers in the initial
 // environment. environment; this way there is no need to change the syntax or, more
 // importantly, the type-checking program when extending the language.
-const analyze = (exp, env) => {
+export const analyze = (exp, env) => {
   const loop = (exp, env, nonGeneric) =>
     switchType(
       Expr,
@@ -391,5 +391,3 @@ const analyze = (exp, env) => {
 
   return loop(exp, env, Set.empty());
 };
-
-export default analyze;
