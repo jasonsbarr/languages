@@ -19,13 +19,15 @@ import { charCodeAt } from "@jasonsbarr/functional-core/lib/string/charCodeAt.js
 import { equals } from "@jasonsbarr/functional-core/lib/object/equals.js";
 import { not } from "@jasonsbarr/functional-core/lib/helpers/not.js";
 import { noop } from "@jasonsbarr/functional-core/lib/helpers/noop.js";
-import { isNotNan } from "@jasonsbarr/functional-core/lib/predicates/isNotNaN.js";
+import { isNotNaN } from "@jasonsbarr/functional-core/lib/predicates/isNotNaN.js";
 
-const fst = (pair) => pair[0];
-const snd = (pair) => pair[1];
 const fail = (msg) => {
   throw new Error(msg);
 };
+const fst = (pair) =>
+  (pair.length === 2 && pair[0]) || fail("Pair must have exactly 2 elements");
+const snd = (pair) =>
+  (pair.length === 2 && pair[1]) || fail("Pair must have 2 elements");
 
 const exprVariants = [
   /**
@@ -80,21 +82,31 @@ const exprVariants = [
 export const Expr = createType("Expr", exprVariants);
 export const { ENum, EBool, EStr, ENil, EVar, EFunc, EApply, ELet, ELetrec } =
   Expr;
-const getVal = ({ value }) => value;
 
-export const exprToString = (expr) =>
-  switchType(
+export const Num = () => ENum();
+export const Bool = () => EBool();
+export const Str = () => EStr();
+export const Nil = () => ENil();
+export const Var = (name) => EVar(name);
+export const Func = (param, body) => EFunc({ param, body });
+export const Apply = (arg, func) => EApply({ arg, func });
+export const Let = (name, defn, body) => ELet({ name, defn, body });
+export const Letrec = (name, defn, body) => ELetrec({ name, defn, body });
+
+export const exprToString = (expr) => {
+  console.log(expr.value);
+  return switchType(
     Expr,
     {
-      ENum: getVal,
-      EBool: getVal,
-      EStr: getVal,
+      ENum: () => "number",
+      EBool: () => "boolean",
+      EStr: () => "string",
       ENil: () => "nil",
       EVar: ({ value: name }) => name,
-      EFunc: ({ value: { name, body } }) =>
-        `fun ${name} -> ${exprToString(body)}`,
+      EFunc: ({ value: { param, body } }) =>
+        `fun ${param} -> ${exprToString(body)}`,
       EApply: ({ value: { arg, func } }) =>
-        `${exprToString(arg)} ${exprToString(func)}`,
+        `${exprToString(func)} ${exprToString(arg)}`,
       ELet: ({ value: { name, defn, body } }) =>
         `let ${name} = ${exprToString(defn)} in ${exprToString(body)}`,
       ELetrec: ({ value: { name, defn, body } }) =>
@@ -102,6 +114,7 @@ export const exprToString = (expr) =>
     },
     expr
   );
+};
 
 /**
  * A type variable stands for an arbitrary type. All TyVars have a unique id,
@@ -134,8 +147,8 @@ const typeVariants = [
   VariantInfo("TypeOperator"),
 ];
 
-const Type = createType("Type", typeVariants);
-const { TypeVariable, TypeOperator } = Type;
+export const Type = createType("Type", typeVariants);
+export const { TypeVariable, TypeOperator } = Type;
 
 let nextVariableId = 0;
 let nextUniqueName = "a";
@@ -164,7 +177,7 @@ const getVariableName = (ty) =>
   switchType(
     Type,
     {
-      TypeVariable: ({ value: tyvar }) => {
+      TypeVariable: (tyvar) => {
         return switchType(
           Option,
           {
@@ -175,7 +188,7 @@ const getVariableName = (ty) =>
               return newName;
             },
           },
-          tyvar.name
+          tyvar.value.name
         );
       },
       TypeOperator: ({ value: { name } }) => name,
@@ -183,14 +196,14 @@ const getVariableName = (ty) =>
     ty
   );
 
-const typeToString = (ty) =>
+export const typeToString = (ty) =>
   switchType(
     Type,
     {
       TypeVariable: ({ value: { instance } }) =>
         instance.fold(
-          () => getVariableName(ty.value),
-          () => typeToString(instance)
+          () => getVariableName(ty),
+          (i) => typeToString(i)
         ),
       TypeOperator: ({ value: { name, types } }) => {
         switch (length(types)) {
@@ -223,13 +236,14 @@ export const env = (...pairs) => {
 
 const extendEnv = (e, pair) => cons(pair, e);
 
-const makeFunctionType = (from, to) => TypeOperator(TyOp("->", List(from, to)));
+export const makeFunctionType = (from, to) =>
+  TypeOperator(TyOp("->", List(from, to)));
 
 // define primitive type operators
-const numType = () => TypeOperator(TyOp("Number", List.empty()));
-const boolType = () => TypeOperator(TyOp("Boolean", List.empty()));
-const strType = () => TypeOperator(TyOp("String", List.empty()));
-const nilType = () => TypeOperator(TyOp("Nil", List.empty()));
+export const numType = TypeOperator(TyOp("Number", List.empty()));
+export const boolType = TypeOperator(TyOp("Boolean", List.empty()));
+export const strType = TypeOperator(TyOp("String", List.empty()));
+export const nilType = TypeOperator(TyOp("Nil", List.empty()));
 
 /**
  * The machinery for type inference
@@ -244,15 +258,15 @@ const prune = (t) =>
   switchType(
     Type,
     {
-      TypeVariable: () => {
-        if (Option.isSome(t.value.instance)) {
-          let newInstance = prune(t.value.instance);
+      TypeVariable: (v) => {
+        if (Option.isSome(v.instance)) {
+          let newInstance = prune(v.instance);
           t.value.instance = Some(newInstance);
           return newInstance;
         }
         return t;
       },
-      _: () => t,
+      TypeOperator: () => t,
     },
     t
   );
@@ -269,7 +283,7 @@ const occursInType = (v, t2) =>
 
 const occursIn = (t, types) => types.includes((t2) => occursInType(t, t2));
 
-const isNumberLiteral = (name) => isNotNan(Number(name));
+const isNumberLiteral = (name) => isNotNaN(Number(name));
 const isBooleanLiteral = (name) => name === "true" || name === "false";
 const isNilLiteral = (name) => name === "nil";
 
@@ -281,8 +295,8 @@ const isGeneric = (v, nonGeneric) => not(nonGeneric.includes(v));
 const fresh = (t, nonGeneric) => {
   let table = Map();
 
-  const loop = (tp) =>
-    switchType(
+  const loop = (tp) => {
+    return switchType(
       Type,
       {
         TypeVariable: (p) => {
@@ -298,10 +312,12 @@ const fresh = (t, nonGeneric) => {
             return p;
           }
         },
-        TypeOperator: ({ value: op }) => ({ ...op, types: op.types.map(loop) }),
+        TypeOperator: ({ value: op }) =>
+          TypeOperator({ ...op, types: op.types.map(loop) }),
       },
       prune(tp)
     );
+  };
 
   return loop(t);
 };
@@ -309,7 +325,7 @@ const fresh = (t, nonGeneric) => {
 // Get the type of identifier name from the type environment env
 const getType = (name, env, nonGeneric) =>
   env
-    .find(([n, _]) => equals(n, name))
+    .find((n) => equals(fst(n), name))
     .fold(
       () => {
         if (isNumberLiteral(name)) return numType;
@@ -318,7 +334,7 @@ const getType = (name, env, nonGeneric) =>
 
         fail(`Undefined symbol ${name}`);
       },
-      ({ value }) => fresh(snd(value), nonGeneric)
+      (value) => fresh(snd(value), nonGeneric)
     );
 
 // Unify the two types t1 and t2. Makes the types t1 and t2 the same.
@@ -360,7 +376,7 @@ export const analyze = (exp, env) => {
         EBool: () => boolType,
         EStr: () => strType,
         ENil: () => nilType,
-        EVar: () => getType(name, env, nonGeneric),
+        EVar: ({ value: name }) => getType(name, env, nonGeneric),
         EApply: ({ value: { arg, func } }) => {
           const funTy = loop(func, env, nonGeneric);
           const argTy = loop(arg, env, nonGeneric);
